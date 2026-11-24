@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Última Estrela</title>
+    <meta
+      name="description"
+      content="A Última Estrela — Jogo de aventura em pixel art onde você explora cenários mágicos, supera obstáculos e recupera as estrelas perdidas do céu."
+    />
+    <meta property="og:title" content="A Última Estrela" />
+    <meta
+      property="og:description"
+      content="Ajude Lumi a recuperar as estrelas desaparecidas e devolver a luz ao céu em três fases encantadas."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <!-- Barra superior de status durante o jogo -->
+      <header id="hudBar" class="hud-bar hidden" aria-label="Painel do jogo">
+        <div class="hud-group">
+          <span id="hudPhase" class="hud-phase">Fase 1 — Floresta Encantada</span>
+        </div>
+
+        <div class="hud-group hud-stats">
+          <span id="hudStars" class="hud-stars">Estrelas: 0 / 7</span>
+          <span class="hud-sep" aria-hidden="true">·</span>
+          <span id="hudTotal" class="hud-total">Total: 0</span>
+        </div>
+
+        <div class="hud-group hud-actions">
+          <button id="btnHudMusic" type="button" class="pixel-btn pixel-btn-sm">
+            Música: Ligada
+          </button>
+          <button id="btnPause" type="button" class="pixel-btn pixel-btn-sm pixel-btn-accent">
+            Pausar
+          </button>
+        </div>
+      </header>
+
+      <!-- Palco principal 16:9 em pixel art -->
+      <section class="stage-frame" aria-label="Área do jogo">
+        <canvas id="gameCanvas" width="480" height="270"></canvas>
+
+        <!-- TELA INICIAL -->
+        <div id="screenStart" class="overlay-screen">
+          <div class="overlay-card start-card">
+            <p class="pixel-kicker">Aventura em Pixel Art</p>
+            <h1 class="game-title">A Última Estrela</h1>
+            <p class="game-subtitle">
+              As estrelas estão sumindo do céu noturno. Guie Lumi por três mundos mágicos e devolva a luz ao firmamento.
+            </p>
+            <div class="menu-buttons">
+              <button id="btnStart" type="button" class="pixel-btn pixel-btn-primary">
+                INICIAR
+              </button>
+              <button id="btnHowTo" type="button" class="pixel-btn">
+                COMO JOGAR
+              </button>
+              <button id="btnMusicStart" type="button" class="pixel-btn pixel-btn-ghost">
+                Música: Ligada
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TELA COMO JOGAR -->
+        <div id="screenHowTo" class="overlay-screen hidden">
+          <div class="overlay-card info-card">
+            <h2 class="overlay-heading">Como Jogar</h2>
+            <div class="controls-list">
+              <div class="control-row">
+                <span class="key-label">Setas ← / → ou A / D</span>
+                <span>Andar para a esquerda e para a direita</span>
+              </div>
+              <div class="control-row">
+                <span class="key-label">Espaço, ↑ ou W</span>
+                <span>Pular para alcançar plataformas e estrelas altas</span>
+              </div>
+              <div class="control-row">
+                <span class="key-label">Tecla P ou Esc</span>
+                <span>Pausar ou retomar a aventura</span>
+              </div>
+            </div>
+            <p class="info-note">
+              Colete todas as estrelas de cada fase para desbloquear o próximo cenário. Desvie dos espinhos sombrios, nuvens elétricas e orbes da noite.
+            </p>
+            <div class="menu-buttons">
+              <button id="btnBackFromHowTo" type="button" class="pixel-btn pixel-btn-primary">
+                VOLTAR
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TELA DE INTRODUÇÃO DA HISTÓRIA -->
+        <div id="screenIntro" class="overlay-screen hidden">
+          <div class="overlay-card story-card">
+            <p class="pixel-kicker">Prólogo</p>
+            <h2 class="overlay-heading">A Noite Sem Brilho</h2>
+            <p class="story-text">
+              Há muito tempo, o céu deste pequeno mundo mágico brilhava com milhares de constelações. Mas, noite após noite, uma névoa silenciosa fez as estrelas desaparecerem uma a uma.
+            </p>
+            <p class="story-text">
+              Você controla <strong>Lumi</strong>, um pequeno guardião da noite. Atravesse a Floresta Encantada, suba ao Vale das Nuvens e alcance o Céu Esquecido para resgatar cada estrela perdida.
+            </p>
+            <div class="menu-buttons">
+              <button id="btnBeginAdventure" type="button" class="pixel-btn pixel-btn-primary">
+                COMEÇAR FASE 1
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TELA DE PAUSA -->
+        <div id="screenPause" class="overlay-screen hidden">
+          <div class="overlay-card pause-card">
+            <h2 class="overlay-heading">Jogo Pausado</h2>
+            <p class="story-text">Descanse sob a luz da lua antes de continuar sua jornada.</p>
+            <div class="menu-buttons vertical">
+              <button id="btnResume" type="button" class="pixel-btn pixel-btn-primary">
+                Continuar
+              </button>
+              <button id="btnRestartLevel" type="button" class="pixel-btn">
+                Reiniciar Fase
+              </button>
+              <button id="btnPauseMusic" type="button" class="pixel-btn">
+                Música: Ligada
+              </button>
+              <button id="btnQuitToMenu" type="button" class="pixel-btn pixel-btn-ghost">
+                Tela Inicial
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TELA DE FASE CONCLUÍDA -->
+        <div id="screenStageClear" class="overlay-screen hidden">
+          <div class="overlay-card story-card">
+            <p class="pixel-kicker">Caminho Liberado</p>
+            <h2 id="stageClearTitle" class="overlay-heading">Fase Concluída!</h2>
+            <p id="stageClearText" class="story-text">
+              Todas as estrelas deste cenário retornaram ao céu. Um novo caminho mágico se abriu adiante.
+            </p>
+            <div class="menu-buttons">
+              <button id="btnNextStage" type="button" class="pixel-btn pixel-btn-primary">
+                AVANÇAR PARA A PRÓXIMA FASE
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TELA DE CONCLUSÃO E VITÓRIA -->
+        <div id="screenVictory" class="overlay-screen hidden">
+          <div class="overlay-card victory-card">
+            <p class="pixel-kicker">Fim da Jornada</p>
+            <h2 class="overlay-heading">A Luz Voltou ao Céu!</h2>
+            <p class="story-text">
+              Com a Última Estrela de volta ao seu lugar no Céu Esquecido, todas as constelações despertaram juntas em um brilho azul, lilás e rosa.
+            </p>
+            <p class="story-text">
+              Graças à coragem de Lumi, o pequeno mundo mágico nunca mais conhecerá a escuridão eterna.
+            </p>
+            <p id="victoryStats" class="victory-stats">Estrelas recuperadas: 23</p>
+            <div class="menu-buttons">
+              <button id="btnPlayAgain" type="button" class="pixel-btn pixel-btn-primary">
+                JOGAR NOVAMENTE
+              </button>
+              <button id="btnVictoryMenu" type="button" class="pixel-btn">
+                TELA INICIAL
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Controles táteis para celular / tablet -->
+      <footer id="touchControls" class="touch-controls hidden" aria-label="Controles na tela">
+        <div class="touch-left">
+          <button id="touchLeft" type="button" class="touch-btn" aria-label="Mover para a esquerda">◀</button>
+          <button id="touchRight" type="button" class="touch-btn" aria-label="Mover para a direita">▶</button>
+        </div>
+        <button id="touchJump" type="button" class="touch-btn touch-jump" aria-label="Pular">PULAR</button>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/game.js"></script>
+  </body>
+</html>

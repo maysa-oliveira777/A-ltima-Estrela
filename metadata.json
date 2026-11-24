@@ -1,0 +1,6 @@
+{
+  "name": "ÚLTIMO SINAL — O Código do Fim",
+  "description": "Jogo interativo de aventura narrativa e ficção científica em 2098, com escolhas ramificadas, exploração de cenários, inventário e desafios de programação integrados à história.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
